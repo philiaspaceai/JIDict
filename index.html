@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JIDict - Japanese Indonesia Dictionary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              jp: ['Noto Sans JP', 'sans-serif'],
+            },
+            colors: {
+              glass: "rgba(255, 255, 255, 0.7)",
+              glassBorder: "rgba(0, 0, 0, 0.05)",
+              brandRed: "#DC2626", // Red for JI
+              brandBlack: "#171717", // Black for Dict
+              primary: "#4F46E5",
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'float-delayed': 'float 6s ease-in-out 3s infinite',
+              'sway': 'sway 4s ease-in-out infinite alternate',
+              'fall': 'fall 10s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                '50%': { transform: 'translateY(-20px) rotate(2deg)' },
+              },
+              sway: {
+                '0%': { transform: 'rotate(-5deg)' },
+                '100%': { transform: 'rotate(5deg)' },
+              },
+              fall: {
+                '0%': { transform: 'translateY(-20px) rotate(0deg)', opacity: '0' },
+                '20%': { opacity: '1' },
+                '100%': { transform: 'translateY(200px) rotate(360deg)', opacity: '0' }
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #f8fafc; /* Light Slate Background */
+        color: #1e293b;
+        overflow-x: hidden;
+      }
+      .perspective-container {
+        perspective: 1200px;
+      }
+      .card-3d {
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out;
+      }
+      
+      /* --- Japanese 3D Objects CSS --- */
+
+      /* Paper Lantern (Chochin) */
+      .lantern-container {
+        position: relative;
+        width: 50px;
+        height: 70px;
+        transform-style: preserve-3d;
+        transform-origin: top center;
+      }
+      
+      .lantern-string {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        width: 2px;
+        height: 20px;
+        background: #444;
+      }
+      .lantern-body {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 4px 0;
+        overflow: hidden;
+        /* Removed transition to avoid conflict with animation keyframes */
+      }
+      .lantern-cap {
+        width: 80%;
+        height: 6px;
+        background: #171717;
+        margin: 0 auto;
+        border-radius: 2px;
+      }
+      .lantern-rib {
+        width: 100%;
+        height: 1px;
+        background: rgba(0,0,0,0.1);
+        margin: 4px 0;
+      }
+      .lantern-kanji {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'Noto Sans JP', sans-serif;
+        font-weight: 900;
+        color: rgba(0,0,0,0.7);
+        font-size: 24px;
+        text-shadow: 0 1px 1px rgba(255,255,255,0.2);
+        pointer-events: none;
+      }
+
+      /* Sakura Petal */
+      .sakura {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: #f472b6; /* pink-400 for better visibility */
+        border-radius: 14px 0px 14px 0px;
+        opacity: 0.9;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; 
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "vite": "https://aistudiocdn.com/vite@^7.2.6"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
