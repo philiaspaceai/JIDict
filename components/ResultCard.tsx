@@ -42,18 +42,61 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
     }
   };
 
+  // Fallback Audio using Google Translate TTS API (Unofficial but robust)
+  // This runs if the native device TTS fails or doesn't support Japanese
+  const playFallbackAudio = (text: string) => {
+    const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=ja`);
+    
+    audio.onplay = () => setIsPlaying(true);
+    audio.onended = () => setIsPlaying(false);
+    audio.onerror = () => {
+        setIsPlaying(false);
+        console.error("Audio playback failed completely (Native & Fallback)");
+    };
+    
+    audio.play().catch(e => {
+        setIsPlaying(false);
+        console.error("Audio play error:", e);
+    });
+  };
+
   const handlePlayAudio = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!window.speechSynthesis) return;
+    const textToSpeak = entry.word || entry.reading;
     
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(entry.word || entry.reading);
+    // 1. Check if browser supports speech synthesis at all
+    if (!window.speechSynthesis) {
+        playFallbackAudio(textToSpeak);
+        return;
+    }
+    
+    // 2. Try Native TTS
+    window.speechSynthesis.cancel(); // Stop any previous speech
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'ja-JP';
     utterance.rate = 0.9;
+
+    // Check availability of Japanese Voice
+    const voices = window.speechSynthesis.getVoices();
+    const jaVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JP'));
     
+    // If voices are loaded but NO Japanese voice is found, strictly use fallback
+    // (Prevents reading Japanese with an English accent)
+    if (voices.length > 0 && !jaVoice) {
+        playFallbackAudio(textToSpeak);
+        return;
+    }
+    
+    if (jaVoice) {
+        utterance.voice = jaVoice;
+    }
+
     utterance.onstart = () => setIsPlaying(true);
     utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
+    utterance.onerror = () => {
+        // If native fails (common on some Androids), switch to fallback immediately
+        playFallbackAudio(textToSpeak);
+    };
 
     window.speechSynthesis.speak(utterance);
   };
@@ -64,7 +107,6 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
     
     // CHECK FIXED: Use stricter regex to detect numbers.
     // Must be at start of string (^) or preceded by whitespace (\s).
-    // This prevents matching "0." inside "10.".
     const hasNumbers = /(?:^|\s)\d+\./.test(text);
 
     if (hasNumbers) {
