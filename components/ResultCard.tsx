@@ -45,6 +45,9 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
   // Fallback Audio using Google Translate TTS API (Unofficial but robust)
   // This runs if the native device TTS fails or doesn't support Japanese
   const playFallbackAudio = (text: string) => {
+    // Ensure we don't overlap multiple audios
+    setIsPlaying(true);
+    
     const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=ja`);
     
     audio.onplay = () => setIsPlaying(true);
@@ -70,8 +73,10 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
         return;
     }
     
-    // 2. Try Native TTS
-    window.speechSynthesis.cancel(); // Stop any previous speech
+    // Stop any previous speech
+    window.speechSynthesis.cancel(); 
+    
+    // 2. Setup Native TTS
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'ja-JP';
     utterance.rate = 0.9;
@@ -80,23 +85,45 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
     const voices = window.speechSynthesis.getVoices();
     const jaVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JP'));
     
-    // If voices are loaded but NO Japanese voice is found, strictly use fallback
-    // (Prevents reading Japanese with an English accent)
-    if (voices.length > 0 && !jaVoice) {
-        playFallbackAudio(textToSpeak);
-        return;
-    }
-    
     if (jaVoice) {
         utterance.voice = jaVoice;
     }
 
-    utterance.onstart = () => setIsPlaying(true);
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => {
-        // If native fails (common on some Androids), switch to fallback immediately
-        playFallbackAudio(textToSpeak);
+    // SAFETY NET: If native TTS hangs/freezes (common on Android), force fallback after 500ms
+    const safetyTimeout = setTimeout(() => {
+        if (!window.speechSynthesis.speaking) {
+            console.warn("Native TTS timed out, switching to fallback...");
+            window.speechSynthesis.cancel();
+            playFallbackAudio(textToSpeak);
+        }
+    }, 500);
+
+    utterance.onstart = () => {
+        clearTimeout(safetyTimeout); // It started working, cancel the fallback timer
+        setIsPlaying(true);
     };
+
+    utterance.onend = () => {
+        clearTimeout(safetyTimeout);
+        setIsPlaying(false);
+    };
+
+    utterance.onerror = (e) => {
+        clearTimeout(safetyTimeout);
+        // Sometimes 'interrupted' or 'canceled' errors happen normally, don't fallback on those
+        if (e.error !== 'interrupted' && e.error !== 'canceled') {
+             playFallbackAudio(textToSpeak);
+        } else {
+             setIsPlaying(false);
+        }
+    };
+
+    // If voices are empty (first load issue) or no JA voice, fallback immediately
+    if (voices.length > 0 && !jaVoice) {
+         clearTimeout(safetyTimeout);
+         playFallbackAudio(textToSpeak);
+         return;
+    }
 
     window.speechSynthesis.speak(utterance);
   };
@@ -105,12 +132,10 @@ export const ResultCard: React.FC<ResultCardProps> = ({ entry, index }) => {
   const renderMeaning = (text: string) => {
     if (!text) return <span className="text-gray-400 italic">No definition available.</span>;
     
-    // CHECK FIXED: Use stricter regex to detect numbers.
-    // Must be at start of string (^) or preceded by whitespace (\s).
+    // Stricter regex to detect numbers at start of line
     const hasNumbers = /(?:^|\s)\d+\./.test(text);
 
     if (hasNumbers) {
-      // SPLIT FIXED: Split by number only if preceded by start or space.
       const parts = text.split(/(?=(?:^|\s)\d+\.)/g).filter(p => p.trim().length > 0);
       return (
         <div className="flex flex-col gap-2">
