@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("smoke: home renders search or onboarding", async ({ page }) => {
   await page.goto("/");
   const search = page.getByRole("search");
-  const onboarding = page.getByText("Unduh data");
+  const onboarding = page.getByRole("button", { name: "Unduh data" });
   await expect(search.or(onboarding)).toBeVisible();
 });
 

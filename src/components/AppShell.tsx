@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Splash } from "@/components/Splash";
 import { BottomNav } from "@/components/BottomNav";
-import { Onboarding } from "@/components/Onboarding";
 import { getDictDB } from "@/lib/dict/client";
 import { clearDictData, importDictZip } from "@/lib/dict/importer";
 import { DICT_DOWNLOAD_URL } from "@/lib/constants";
@@ -13,7 +12,6 @@ import { fetchRemoteDictIndex, isNewerVersion } from "@/lib/update-check";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [splashDone, setSplashDone] = useState(false);
-  const [ready, setReady] = useState<boolean | null>(null);
   const [remoteVersion, setRemoteVersion] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
@@ -28,17 +26,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       try {
         const dict = getDictDB();
         const count = await dict.terms.count();
-        if (cancelled) return;
-        setReady(count > 0);
-        if (count > 0) {
-          const local = await dict.dictInfo.get("revision:jidict");
-          const remote = await fetchRemoteDictIndex();
-          if (!cancelled && remote && isNewerVersion(remote.version, local?.value ?? null)) {
-            setRemoteVersion(remote.version);
-          }
+        if (cancelled || count === 0) return;
+        const local = await dict.dictInfo.get("revision:jidict");
+        const remote = await fetchRemoteDictIndex();
+        if (!cancelled && remote && isNewerVersion(remote.version, local?.value ?? null)) {
+          setRemoteVersion(remote.version);
         }
       } catch {
-        if (!cancelled) setReady(false);
+        // offline — stay usable
       }
     })();
     return () => {
@@ -117,25 +112,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-24 pt-4">
-        {ready === null ? null : ready === false ? (
-          <Onboarding onDone={() => setReady(true)} />
-        ) : (
-          <>
-            {remoteVersion && (
-              <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border bg-[var(--card)] p-3 text-sm">
-                <span>Update kamus {remoteVersion} tersedia</span>
-                <button
-                  onClick={applyUpdate}
-                  disabled={updating}
-                  className="shrink-0 rounded-full bg-[var(--primary)] px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
-                >
-                  {updating ? `${Math.round(updateProgress * 100)}%` : "Update"}
-                </button>
-              </div>
-            )}
-            {children}
-          </>
+        {remoteVersion && (
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border bg-[var(--card)] p-3 text-sm">
+            <span>Update kamus {remoteVersion} tersedia</span>
+            <button
+              onClick={applyUpdate}
+              disabled={updating}
+              className="shrink-0 rounded-full bg-[var(--primary)] px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+            >
+              {updating ? `${Math.round(updateProgress * 100)}%` : "Update"}
+            </button>
+          </div>
         )}
+        {children}
       </main>
       <BottomNav />
     </div>

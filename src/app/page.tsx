@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { SearchBar } from "@/components/SearchBar";
 import { EntryCard } from "@/components/EntryCard";
 import { MascotEmpty } from "@/components/MascotEmpty";
+import { Onboarding } from "@/components/Onboarding";
 import { getDictDB } from "@/lib/dict/client";
 import { searchDict } from "@/lib/dict/engine";
 import { addHistory, getFrequencySource, isBookmarked, toggleBookmark } from "@/lib/user";
@@ -13,6 +14,7 @@ import type { DictEntry } from "@/lib/search";
 
 function SearchInner() {
   const params = useSearchParams();
+  const [ready, setReady] = useState<boolean | null>(null);
   const [results, setResults] = useState<DictEntry[] | null>(null);
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false);
@@ -36,10 +38,17 @@ function SearchInner() {
   }, []);
 
   useEffect(() => {
+    getDictDB().terms.count().then((c) => setReady(c > 0)).catch(() => setReady(false));
+  }, []);
+
+  useEffect(() => {
     const q = params.get("q");
     if (q) run(q);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (ready === null) return null;
+  if (!ready) return <Onboarding onDone={() => setReady(true)} />;
 
   async function onToggle(e: DictEntry) {
     await toggleBookmark(e);
