@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { BUNDLED_DICTS, DICT_DOWNLOAD_URL } from "@/lib/constants";
+import { getDictDB } from "@/lib/dict/client";
+import { importDictZip } from "@/lib/dict/importer";
 import { getDB } from "@/lib/db";
 
-async function downloadWithProgress(url: string, onProgress: (p: number) => void): Promise<Blob> {
+async function downloadBytes(url: string, onProgress: (p: number) => void): Promise<Uint8Array> {
   const res = await fetch(url);
-  if (!res.ok || !res.body) throw new Error(`Unduh gagal: ${url}`);
+  if (!res.ok || !res.body) throw new Error(`Unduh gagal (${res.status})`);
   const total = Number(res.headers.get("content-length") ?? 0);
   const reader = res.body.getReader();
   const chunks: Uint8Array[] = [];
@@ -21,11 +23,30 @@ async function downloadWithProgress(url: string, onProgress: (p: number) => void
       if (total) onProgress(done / total);
     }
   }
-  return new Blob(chunks as BlobPart[]);
+  const out = new Uint8Array(done);
+  let off = 0;
+  for (const c of chunks) {
+    out.set(c, off);
+    off += c.length;
+  }
+  return out;
+}
+
+const META_SOURCE: Record<string, string> = {
+  pitch_accent: "pitch",
+  jpdb_freq: "jpdb",
+  youtube_freq: "youtube",
+  jlpt_freq: "jlpt",
+};
+
+function sourceOf(file: string): string {
+  const base = file.split("/").pop()?.replace(".zip", "") ?? file;
+  return META_SOURCE[base] ?? base;
 }
 
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,19 +54,27 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     setBusy(true);
     setError(null);
     try {
-      const db = getDB();
-      // 1. Kamus utama JIDict-yomitan
-      setProgress(0.05);
-      await downloadWithProgress(DICT_DOWNLOAD_URL, (p) => setProgress(0.05 + p * 0.7));
+      const dict = getDictDB();
+      // 1. Kamus utama (~43MB)
+      setStage("Mengunduh kamus…");
+      const main = await downloadBytes(DICT_DOWNLOAD_URL, (p) => setProgress(p * 0.5));
+      setStage("Memasang kamus…");
+      await importDictZip(dict, main, {
+        kind: "main",
+        source: "jidict",
+        onProgress: (d, t) => setProgress(0.5 + (d / t) * 0.2),
+      });
       // 2. Frekuensi + pitch dari repo ini
       let i = 0;
       for (const d of BUNDLED_DICTS) {
-        await downloadWithProgress(d.file, (p) =>
-          setProgress(0.75 + (i + p) / BUNDLED_DICTS.length / 4),
+        setStage(`Memasang ${sourceOf(d.file)}…`);
+        const bytes = await downloadBytes(d.file, (p) =>
+          setProgress(0.7 + ((i + p) / BUNDLED_DICTS.length) * 0.3),
         );
+        await importDictZip(dict, bytes, { kind: "meta", source: sourceOf(d.file) });
         i += 1;
       }
-      await db.meta.put({ key: "dictReady", value: new Date().toISOString() });
+      await getDB().meta.put({ key: "dictReady", value: new Date().toISOString() });
       setProgress(1);
       onDone();
     } catch (e) {
@@ -65,13 +94,14 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
       <div className="h-1.5 w-56 overflow-hidden rounded bg-[var(--border)]">
         <div className="h-full rounded bg-[var(--primary)] transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
+      {stage && busy && <p className="text-xs text-[var(--muted-foreground)]">{stage}</p>}
       {error && <p className="text-sm text-[var(--primary)]">{error}</p>}
       <button
         onClick={start}
         disabled={busy}
         className="rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
       >
-        {busy ? "Mengunduh…" : "Unduh data"}
+        {busy ? "Mengunduh…" : progress > 0 && error ? "Coba lagi" : "Unduh data"}
       </button>
     </div>
   );

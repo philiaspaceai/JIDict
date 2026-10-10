@@ -23,11 +23,13 @@ export async function fetchRemoteDictIndex(
     const res = await fetchFn(DICT_INDEX_URL, { cache: "no-store" });
     if (!res.ok) return null;
     const json = (await res.json()) as {
+      revision?: string | number;
       version?: string | number;
       updatedAt?: string;
     };
+    const rev = json.revision ?? json.version ?? "unknown";
     return {
-      version: String(json.version ?? "unknown"),
+      version: String(rev),
       updatedAt: json.updatedAt ?? "",
     };
   } catch {
