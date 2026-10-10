@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ed090e;
+  --color-primary-dark: #b8070b;
+  --color-ink: #262626;
+  --color-paper: #ffffff;
+
+  --font-sans: "Inter", "Noto Sans JP", system-ui, sans-serif;
+  --font-jp: "Noto Sans JP", "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #262626;
+  --card: #ffffff;
+  --card-foreground: #262626;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --border: #e5e5e5;
+  --primary: #ed090e;
+  --primary-foreground: #ffffff;
+  --ring: #ed090e;
+}
+
+.dark {
+  --background: #131313;
+  --foreground: #f5f5f5;
+  --card: #1e1e1e;
+  --card-foreground: #f5f5f5;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --border: #333333;
+  --primary: #ff2b30;
+  --primary-foreground: #ffffff;
+  --ring: #ff2b30;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Splash progress */
+@keyframes splash-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@keyframes fade-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.splash-enter {
+  animation: fade-scale-in 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-enter { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}

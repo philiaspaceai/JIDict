@@ -1,0 +1,52 @@
+{
+  "name": "jidict",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JIDict — Kamus Jepang-Indonesia. PWA offline-first berbasis Next.js + Yomitan engine.",
+  "license": "GPL-3.0-or-later",
+  "author": "philiaspaceai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philiaspaceai/JIDict.git"
+  },
+  "scripts": {
+    "dev": "SERWIST_SUPPRESS_TURBOPACK_WARNING=1 next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:all": "npm run typecheck && npm run test && npm run test:e2e"
+  },
+  "dependencies": {
+    "@serwist/next": "9.5.13",
+    "dexie": "^4.0.11",
+    "next": "16.4.0",
+    "next-themes": "^0.4.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "serwist": "9.5.13",
+    "wanakana": "^5.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.7.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

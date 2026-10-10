@@ -1,0 +1,47 @@
+# JIDict deps
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Vercel
+.vercel
+
+# Misc Next
+*.tsbuildinfo
+next-env.d.ts
+
+# Env
+.env*.local
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+playwright-report/
+test-results/
+playwright/.cache/
+
+# Vendored reference - JANGAN di-push (clone --depth 1 dari Yomitan asli)
+references/
+
+# Generated service worker (Serwist build output)
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
