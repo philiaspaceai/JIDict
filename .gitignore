@@ -40,6 +40,9 @@ public/sw.js.map
 public/workbox-*.js
 public/workbox-*.js.map
 
+# Generated per-build app version (Vercel SHA)
+public/app-version.json
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

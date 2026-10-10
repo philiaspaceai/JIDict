@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "SERWIST_SUPPRESS_TURBOPACK_WARNING=1 next dev",
+    "prebuild": "node scripts/gen-version.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",

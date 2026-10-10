@@ -9,10 +9,12 @@ import { getDictDB } from "@/lib/dict/client";
 import { clearDictData, importDictZip } from "@/lib/dict/importer";
 import { DICT_DOWNLOAD_URL } from "@/lib/constants";
 import { fetchRemoteDictIndex, isNewerVersion } from "@/lib/update-check";
+import { checkAppUpdate, markAppUpdated } from "@/lib/app-update";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [splashDone, setSplashDone] = useState(false);
   const [remoteVersion, setRemoteVersion] = useState<string | null>(null);
+  const [appSha, setAppSha] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
   const { resolvedTheme } = useTheme();
@@ -32,6 +34,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         if (!cancelled && remote && isNewerVersion(remote.version, local?.value ?? null)) {
           setRemoteVersion(remote.version);
         }
+        const app = await checkAppUpdate(fetch, localStorage);
+        if (!cancelled && app.available && app.sha) setAppSha(app.sha);
       } catch {
         // offline — stay usable
       }
@@ -93,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   if (!splashDone) {
-    return <Splash onDone={() => setSplashDone(true)} updateAvailable={remoteVersion !== null} />;
+    return <Splash onDone={() => setSplashDone(true)} updateAvailable={remoteVersion !== null || appSha !== null} />;
   }
 
   return (
@@ -121,6 +125,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="shrink-0 rounded-full bg-[var(--primary)] px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
             >
               {updating ? `${Math.round(updateProgress * 100)}%` : "Update"}
+            </button>
+          </div>
+        )}
+        {appSha && (
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border bg-[var(--card)] p-3 text-sm">
+            <span>Update aplikasi tersedia</span>
+            <button
+              onClick={() => {
+                markAppUpdated(localStorage, appSha);
+                location.reload();
+              }}
+              className="shrink-0 rounded-full bg-[var(--primary)] px-4 py-1.5 text-xs font-semibold text-white"
+            >
+              Muat ulang
             </button>
           </div>
         )}
