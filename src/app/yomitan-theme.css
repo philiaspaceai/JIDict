@@ -1,0 +1,83 @@
+/*
+ * Variabel tema untuk render Yomitan.
+ * Nilai disalin dari Yomitan @ e7334a9:
+ * - light (:root): ext/css/material.css :root + ext/css/display.css :root
+ * - dark (.dark): ext/css/material.css :root[data-theme=dark]
+ *   + ext/css/display.css :root[data-theme=dark]
+ * Hanya subset yang dipakai ext/css/structured-content.css (+ link).
+ * Dark dipetakan ke kelas .dark (hook next-themes), bukan atribut data-theme.
+ */
+
+:root {
+  --font-size-no-units: 14;
+  --line-height: calc(20 / var(--font-size-no-units));
+  --list-padding1: 1.4em;
+  --list-padding2: var(--list-padding1);
+  --compact-list-separator: ' | ';
+  --text-color: #000000;
+  --text-color-light2: #666666;
+  --text-color-light3: #777777;
+  --background-color-dark1: #eeeeee;
+  --gloss-image-background-color: #eeeeee;
+  --accent-color: #1a73e8;
+  --accent-color-dark: #1060c0;
+  --link-color: var(--accent-color);
+}
+
+.dark {
+  --font-size-no-units: 14;
+  --line-height: calc(20 / var(--font-size-no-units));
+  --list-padding1: 1.4em;
+  --list-padding2: var(--list-padding1);
+  --compact-list-separator: ' | ';
+  --text-color: #d4d4d4;
+  --text-color-light2: #999999;
+  --text-color-light3: #888888;
+  --background-color-dark1: #333333;
+  --gloss-image-background-color: #eeeeee;
+  --accent-color: #4a91ed;
+  --accent-color-dark: #1060c0;
+  --link-color: var(--accent-color);
+}
+
+/* Wilayah glossary mengikuti pewarnaan teks Yomitan */
+.jidict-glossary {
+  color: var(--text-color);
+}
+
+/* Kembalikan penomoran list ala UA default yang dihapus Tailwind preflight.
+   Yomitan mengandalkan default browser (decimal/disc) untuk ol/ul. */
+.jidict-glossary ol[data-sc-content="glossary"] {
+  list-style-type: decimal;
+}
+
+.jidict-glossary ul {
+  list-style-type: disc;
+}
+
+/* Link definisi mengikuti warna link Yomitan */
+.jidict-glossary a.gloss-link {
+  color: var(--link-color);
+}
+
+/* styles.css kamus memakai warna terang hardcode. Di dark mode kartu-kartu
+   itu digelapkan agar teks terang tetap terbaca (light mode tidak disentuh).
+   Spesifisitas dinaikkan agar menang atas <style> kamus yang di-inject. */
+.dark .jidict-glossary div[data-sc-content="examples"] {
+  background-color: #262626;
+  border-left-color: #8a8a8a;
+}
+
+.dark .jidict-glossary div[data-sc-content="example-id"],
+.dark .jidict-glossary span[data-sc-content="xref-glossary"],
+.dark .jidict-glossary span[data-sc-content="antonym-glossary"] {
+  color: #b5b5b5;
+}
+
+.dark .jidict-glossary div[data-sc-content="xref"] {
+  background-color: #1d2a3a;
+}
+
+.dark .jidict-glossary div[data-sc-content="antonym"] {
+  background-color: #382326;
+}
