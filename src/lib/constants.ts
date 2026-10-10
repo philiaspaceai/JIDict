@@ -7,11 +7,11 @@ export const COLORS = {
   white: "#ffffff",
 } as const;
 
-/** Remote dictionary source (JIDict-yomitan releases). */
+/** Remote dictionary source (JIDict-yomitan via GitHub Pages mirror — CORS-enabled). */
 export const DICT_INDEX_URL =
-  "https://github.com/philiaspaceai/JIDict-yomitan/releases/latest/download/JIDict.json";
+  "https://philiaspaceai.github.io/JIDict-yomitan/JIDict.json";
 export const DICT_DOWNLOAD_URL =
-  "https://github.com/philiaspaceai/JIDict-yomitan/releases/latest/download/JIDict-yomitan.zip";
+  "https://philiaspaceai.github.io/JIDict-yomitan/JIDict-yomitan.zip";
 
 /** Bundled meta dictionaries served from this repo (public/dictionaries). */
 export const BUNDLED_DICTS = [

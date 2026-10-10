@@ -8,8 +8,9 @@ PWA offline-first. Cari kanji / kana / romaji. Engine kamus dari [Yomitan](https
 
 ## Data
 
-- Kamus utama: https://github.com/philiaspaceai/JIDict-yomitan/releases/latest/download/JIDict-yomitan.zip
-- Versi: https://github.com/philiaspaceai/JIDict-yomitan/releases/latest/download/JIDict.json
+- Kamus utama: https://philiaspaceai.github.io/JIDict-yomitan/JIDict-yomitan.zip
+- Versi: https://philiaspaceai.github.io/JIDict-yomitan/JIDict.json
+- (Mirror CORS dari rilis https://github.com/philiaspaceai/JIDict-yomitan — github.com memblokir CORS browser)
 - Frekuensi + pitch accent: dibundel dari repo ini (`public/dictionaries/*.zip`)
 
 Onboarding mengunduh sekali, lalu full offline. Splash setiap buka mengecek update kamus + update app.
