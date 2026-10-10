@@ -1,11 +1,11 @@
 import type { FrequencySource } from "./constants";
 
-/** Minimal dictionary entry (rendered from Yomitan term banks). */
+/** Minimal dictionary entry (glossary mentah Yomitan, dirender verbatim). */
 export interface DictEntry {
   id: string;
   expression: string;
   reading: string;
-  glossary: string[];
+  glossary: unknown;
   score: number;
   pitch?: string[];
   freqJpdb?: number;

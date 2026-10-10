@@ -32,6 +32,13 @@ describe("searchDict", () => {
     expect(r[0].glossary).toEqual(["makan"]);
   });
 
+  it("glossary structured-content lewat mentah", async () => {
+    const raw = [{ type: "structured-content", content: "x" }];
+    await db.terms.add({ expression: "合いの子", reading: "あいのこ", score: 0, glossary: raw, sequence: 9, tags: "" });
+    const r = await searchDict(db, "合いの子", { source: "jpdb" });
+    expect(r[0].glossary).toStrictEqual(raw);
+  });
+
   it("finds via romaji", async () => {
     const r = await searchDict(db, "taberu", { source: "jpdb" });
     expect(r.some((e) => e.expression === "食べる")).toBe(true);

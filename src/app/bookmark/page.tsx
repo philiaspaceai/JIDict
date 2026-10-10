@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { EntryCard } from "@/components/EntryCard";
+import { EntryDetail } from "@/components/EntryDetail";
 import { MascotEmpty } from "@/components/MascotEmpty";
 import { listBookmarks, toggleBookmark } from "@/lib/user";
 import type { DictEntry } from "@/lib/search";
 
 export default function BookmarkPage() {
   const [items, setItems] = useState<{ id: string; entry: DictEntry }[]>([]);
+  const [selected, setSelected] = useState<DictEntry | null>(null);
 
   useEffect(() => {
     listBookmarks().then(setItems).catch(() => {});
@@ -36,9 +38,20 @@ export default function BookmarkPage() {
       ) : (
         <div className="mt-3 space-y-2">
           {items.map((i) => (
-            <EntryCard key={i.id} entry={i.entry} bookmarked onToggleBookmark={() => remove(i.entry)} />
+            <EntryCard key={i.id} entry={i.entry} bookmarked onToggleBookmark={() => remove(i.entry)} onOpen={() => setSelected(i.entry)} />
           ))}
         </div>
+      )}
+      {selected && (
+        <EntryDetail
+          entry={selected}
+          bookmarked
+          onToggleBookmark={() => {
+            remove(selected);
+            setSelected(null);
+          }}
+          onClose={() => setSelected(null)}
+        />
       )}
     </AppShell>
   );

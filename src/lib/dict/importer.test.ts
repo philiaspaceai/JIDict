@@ -33,6 +33,17 @@ describe("importDictZip", () => {
     expect(await db.dictInfo.get("revision:jidict")).toMatchObject({ value: "9" });
   });
 
+  it("menyimpan styles.css kamus", async () => {
+    const db = new DictDB(`imp-css-${Date.now()}`);
+    const bytes = await makeZip({
+      "index.json": JSON.stringify({ title: "JIDict", format: 3, revision: "9" }),
+      "term_bank_1.json": JSON.stringify([["a", "b", "", "", 0, ["x"], 1, ""]]),
+      "styles.css": "ol[data-sc-content]{color:red}",
+    });
+    await importDictZip(db, bytes, { kind: "main", source: "jidict" });
+    expect(await db.dictInfo.get("css:jidict")).toMatchObject({ value: "ol[data-sc-content]{color:red}" });
+  });
+
   it("imports meta banks with source tag", async () => {
     const db = new DictDB(`imp-meta-${Date.now()}`);
     const bytes = await makeZip({

@@ -2,7 +2,8 @@ export interface TermRecord {
   expression: string;
   reading: string;
   score: number;
-  glossary: string[];
+  /** Glossary mentah verbatim format Yomitan (JANGAN di-flatten — dirender apa adanya). */
+  glossary: unknown;
   sequence: number;
   tags: string;
 }
@@ -20,23 +21,12 @@ export function parseTermEntry(row: unknown): TermRecord | null {
   ];
   if (typeof expression !== "string" || typeof reading !== "string") return null;
   if (!expression) return null;
-  const gloss: string[] = [];
-  if (Array.isArray(glossary)) {
-    for (const g of glossary) {
-      if (typeof g === "string") {
-        if (g) gloss.push(g);
-      } else if (g && typeof g === "object" && typeof (g as { text?: unknown }).text === "string") {
-        gloss.push((g as { text: string }).text);
-      }
-    }
-  } else if (typeof glossary === "string" && glossary) {
-    gloss.push(glossary);
-  }
+  // Simpan glossary mentah verbatim — flattening menghilangkan structured-content.
   return {
     expression,
     reading,
     score: typeof score === "number" ? score : 0,
-    glossary: gloss,
+    glossary: glossary ?? [],
     sequence: typeof sequence === "number" ? sequence : 0,
     tags: typeof termTags === "string" ? termTags : "",
   };

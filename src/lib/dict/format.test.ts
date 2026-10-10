@@ -11,9 +11,10 @@ describe("parseTermEntry (Yomitan term_bank v3)", () => {
     expect(r).toMatchObject({ expression: "食べる", reading: "たべる", score: 10, sequence: 1234 });
     expect(r!.glossary).toEqual(["to eat"]);
   });
-  it("joins structured glossary text", () => {
-    const r = parseTermEntry(["a", "b", "", "", 0, [{ type: "text", text: "makan" }, "minum"], 0, ""]);
-    expect(r!.glossary).toEqual(["makan", "minum"]);
+  it("menyimpan structured-content mentah verbatim (JANGAN flatten)", () => {
+    const raw = [{ type: "structured-content", content: [{ tag: "span", content: "makan" }] }];
+    const r = parseTermEntry(["a", "b", "", "", 0, raw, 0, ""]);
+    expect(r!.glossary).toBe(raw);
   });
   it("rejects malformed entry", () => {
     expect(parseTermEntry(["only"])).toBeNull();

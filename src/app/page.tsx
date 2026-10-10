@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { SearchBar } from "@/components/SearchBar";
 import { EntryCard } from "@/components/EntryCard";
+import { EntryDetail } from "@/components/EntryDetail";
 import { MascotEmpty } from "@/components/MascotEmpty";
 import { Onboarding } from "@/components/Onboarding";
 import { getDictDB } from "@/lib/dict/client";
@@ -20,6 +21,7 @@ function SearchInner() {
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const [marks, setMarks] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<DictEntry | null>(null);
 
   const run = useCallback(async (q: string) => {
     setQuery(q);
@@ -38,7 +40,18 @@ function SearchInner() {
   }, []);
 
   useEffect(() => {
-    getDictDB().terms.count().then((c) => setReady(c > 0)).catch(() => setReady(false));
+    (async () => {
+      try {
+        const dict = getDictDB();
+        const [count, marker] = await Promise.all([
+          dict.terms.count(),
+          dict.dictInfo.get("format:glossary"),
+        ]);
+        setReady(count > 0 && marker?.value === "raw-v1");
+      } catch {
+        setReady(false);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -74,9 +87,21 @@ function SearchInner() {
       {!busy && results !== null && results.length > 0 && (
         <div className="space-y-2">
           {results.map((e) => (
-            <EntryCard key={e.id} entry={e} bookmarked={marks.has(e.id)} onToggleBookmark={() => onToggle(e)} />
+            <EntryCard key={e.id} entry={e} bookmarked={marks.has(e.id)} onToggleBookmark={() => onToggle(e)} onOpen={() => setSelected(e)} />
           ))}
         </div>
+      )}
+      {selected && (
+        <EntryDetail
+          entry={selected}
+          bookmarked={marks.has(selected.id)}
+          onToggleBookmark={() => onToggle(selected)}
+          onClose={() => setSelected(null)}
+          onNavigate={(q) => {
+            setSelected(null);
+            run(q);
+          }}
+        />
       )}
     </div>
   );

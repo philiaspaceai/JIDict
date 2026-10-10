@@ -112,6 +112,20 @@ export async function importDictZip(
 
   await db.dictInfo.put({ key: `title:${opts.source}`, value: title });
   await db.dictInfo.put({ key: `revision:${opts.source}`, value: revision });
+  // Penanda format glossary mentah (raw-v1). DB lama berformat flatten
+  // dianggap belum siap sehingga user onboarding ulang.
+  if (opts.kind === "main") {
+    await db.dictInfo.put({ key: "format:glossary", value: "raw-v1" });
+  }
+
+  // styles.css kamus (untuk render sesuai gaya kamus) — hanya di kamus utama.
+  if (opts.kind === "main") {
+    const cssEntry = byName.get("styles.css") as FileEntry | undefined;
+    if (cssEntry) {
+      const css = await cssEntry.getData(new TextWriter());
+      await db.dictInfo.put({ key: `css:${opts.source}`, value: css });
+    }
+  }
 
   return { terms, meta, title, revision };
 }

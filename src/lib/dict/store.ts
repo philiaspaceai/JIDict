@@ -5,7 +5,8 @@ export interface TermRow {
   expression: string;
   reading: string;
   score: number;
-  glossary: string[];
+  /** Glossary mentah verbatim (structured-content Yomitan). */
+  glossary: unknown;
   sequence: number;
   tags: string;
 }

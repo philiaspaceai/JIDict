@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { BUNDLED_DICTS, DICT_DOWNLOAD_URL } from "@/lib/constants";
 import { getDictDB } from "@/lib/dict/client";
-import { importDictZip } from "@/lib/dict/importer";
+import { clearDictData, importDictZip } from "@/lib/dict/importer";
 import { getDB } from "@/lib/db";
 
 async function downloadBytes(url: string, onProgress: (p: number) => void): Promise<Uint8Array> {
@@ -55,6 +55,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     setError(null);
     try {
       const dict = getDictDB();
+      // Bersihkan dulu agar tidak duplikat (mis. migrasi format lama).
+      await clearDictData(dict);
       // 1. Kamus utama (~43MB)
       setStage("Mengunduh kamus…");
       const main = await downloadBytes(DICT_DOWNLOAD_URL, (p) => setProgress(p * 0.5));

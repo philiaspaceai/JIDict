@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../vendor/yomitan/css/structured-content.css";
 
 @theme {
   --color-primary: #ed090e;
@@ -41,6 +42,22 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Glosarium Yomitan: samakan ukuran teks + dark mode */
+.jidict-glossary {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.dark .jidict-glossary div[data-sc-content="examples"] {
+  background-color: #262626;
+  border-left-color: #a3a3a3;
+}
+
+.dark .jidict-glossary div[data-sc-content="example"] {
+  border-color: #333333;
 }
 
 /* Splash progress */

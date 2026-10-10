@@ -45,7 +45,7 @@ export async function searchDict(
   const limit = opts.limit ?? 50;
   const variants = buildVariants(q);
 
-  const seen = new Map<string, { expression: string; reading: string; score: number; glossary: string[] }>();
+  const seen = new Map<string, { expression: string; reading: string; score: number; glossary: unknown }>();
 
   for (const v of variants) {
     const exactExp = await db.terms.where("expression").equals(v).limit(PER_VARIANT_LIMIT).toArray();
