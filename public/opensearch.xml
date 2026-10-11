@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>JIDict</ShortName>
+  <Description>Kamus Jepang-Indonesia</Description>
+  <Url type="text/html" template="https://jidict.vercel.app/?q={searchTerms}"/>
+  <Image height="192" width="192" type="image/png">https://jidict.vercel.app/icons/icon-192.png</Image>
+</OpenSearchDescription>

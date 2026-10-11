@@ -10,8 +10,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [splashDone, setSplashDone] = useState(false);
   const pathname = usePathname();
 
-  // Halaman offline darurat SW tidak boleh di-gate splash.
-  const bare = pathname === "/offline";
+  // Halaman publik SEO + darurat SW tidak di-gate splash:
+  // pengunjung Google harus langsung membaca tanpa unduh 43MB.
+  const bare =
+    pathname === "/offline" ||
+    pathname === "/kamus-jepang-indonesia" ||
+    pathname === "/tentang" ||
+    pathname === "/pasang";
 
   if (!splashDone && !bare) {
     return <Splash onDone={() => setSplashDone(true)} />;
