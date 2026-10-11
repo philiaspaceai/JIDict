@@ -42,9 +42,9 @@ export function EntryDetail({
           <div className="flex shrink-0 items-start justify-between gap-3 px-5 pt-2">
             <div>
               <Drawer.Title asChild>
-                <motion.h2 layoutId={`hw-${entry.id}`} className="font-jp text-2xl font-bold leading-tight">
+                <h2 className="font-jp text-2xl font-bold leading-tight">
                   {entry.expression}
-                </motion.h2>
+                </h2>
               </Drawer.Title>
               <Drawer.Description className="font-jp text-base text-[var(--muted-foreground)]">
                 {entry.reading}

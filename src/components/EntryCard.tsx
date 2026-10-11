@@ -102,9 +102,9 @@ export function EntryCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="text-left">
-          <motion.div layoutId={`hw-${entry.id}`} className="font-jp text-lg font-bold leading-tight">
+          <div className="font-jp text-lg font-bold leading-tight">
             {entry.expression}
-          </motion.div>
+          </div>
           <div className="font-jp text-sm text-[var(--muted-foreground)]">{entry.reading}</div>
         </div>
         {onToggleBookmark && (
