@@ -18,6 +18,17 @@
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Garis default: hairline near-white (light) / near-black (dark),
+   bukan currentColor yang terlalu tegas. Di base layer (seperti preflight)
+   agar utilities border-*-explicit tetap menang. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #262626;
