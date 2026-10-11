@@ -3,6 +3,7 @@ import { normalizeQuery, sortByFrequency, type DictEntry } from "@/lib/search";
 import { toHiragana } from "@/lib/dict/kana";
 import { deinflect } from "@/lib/dict/deinflect";
 import type { DictDB } from "@/lib/dict/store";
+import type { DictPronunciation } from "@/lib/search";
 
 export interface SearchOptions {
   source: FrequencySource;
@@ -30,8 +31,8 @@ export function buildVariants(query: string): string[] {
   return uniqueCapped(all);
 }
 
-function pitchLabel(reading: string, positions: number[]): string[] {
-  return positions.map((p) => `${reading} ${p}`);
+function pitchLabel(reading: string, pitches: Array<{ position: number }>): string[] {
+  return pitches.map((p) => `${reading} ${p.position}`);
 }
 
 /** Full offline search over the Dexie dictionary store. */
@@ -91,6 +92,8 @@ export async function searchDict(
     let freqYoutube: number | undefined;
     let jlpt: string | undefined;
     const pitch: string[] = [];
+    const pronunciations: DictPronunciation[] = [];
+    const seenPron = new Set<string>();
     for (const m of metas) {
       if (m.mode === "freq" && m.source === "jpdb" && typeof m.value === "number" && m.value >= 0) {
         freqJpdb = freqJpdb === undefined ? m.value : Math.min(freqJpdb, m.value);
@@ -98,8 +101,15 @@ export async function searchDict(
         freqYoutube = freqYoutube === undefined ? m.value : Math.min(freqYoutube, m.value);
       } else if (m.mode === "jlpt" && m.jlpt && !jlpt) {
         jlpt = m.jlpt;
-      } else if (m.mode === "pitch" && m.positions && m.reading === s.reading) {
-        pitch.push(...pitchLabel(m.reading, m.positions));
+      } else if (m.mode === "pitch" && m.pitches && m.reading === s.reading) {
+        pitch.push(...pitchLabel(m.reading, m.pitches));
+        for (const p of m.pitches) {
+          const key = `${m.reading} ${p.position} ${p.nasal.join(",")} ${p.devoice.join(",")}`;
+          if (!seenPron.has(key)) {
+            seenPron.add(key);
+            pronunciations.push({ reading: m.reading, position: p.position, nasal: p.nasal, devoice: p.devoice });
+          }
+        }
       }
     }
     return {
@@ -111,6 +121,7 @@ export async function searchDict(
       freqJpdb,
       freqYoutube,
       pitch: pitch.length ? [...new Set(pitch)].slice(0, 4) : undefined,
+      pronunciations: pronunciations.length ? pronunciations : undefined,
       jlpt,
     };
   });

@@ -14,7 +14,7 @@ async function seedDB() {
   await db.termMeta.bulkAdd([
     { expression: "食べる", source: "jpdb", mode: "freq", value: 50 },
     { expression: "食べ物", source: "jpdb", mode: "freq", value: 5 },
-    { expression: "食べる", source: "pitch", mode: "pitch", reading: "たべる", positions: [2] },
+    { expression: "食べる", source: "pitch", mode: "pitch", reading: "たべる", pitches: [{ position: 2, nasal: [], devoice: [] }] },
   ]);
   return db;
 }
@@ -57,6 +57,13 @@ describe("searchDict", () => {
   it("attaches pitch", async () => {
     const r = await searchDict(db, "食べる", { source: "jpdb" });
     expect(r[0].pitch?.length).toBeGreaterThan(0);
+  });
+
+  it("attaches structured pronunciations", async () => {
+    const r = await searchDict(db, "食べる", { source: "jpdb" });
+    expect(r[0].pronunciations).toStrictEqual([
+      { reading: "たべる", position: 2, nasal: [], devoice: [] },
+    ]);
   });
 
   it("returns empty for blank query", async () => {

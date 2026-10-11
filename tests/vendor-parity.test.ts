@@ -5,6 +5,7 @@ import { execSync } from "node:child_process";
 /** Vendored Yomitan files must stay byte-identical to the reference checkout. */
 const FILES = [
   "ext/js/display/structured-content-generator.js",
+  "ext/js/display/pronunciation-generator.js",
   "ext/js/display/display-content-manager.js",
   "ext/js/templates/anki-template-renderer-content-manager.js",
   "ext/js/language/text-utilities.js",
@@ -22,6 +23,7 @@ const FILES = [
   "ext/js/language/ja/japanese-wanakana.js",
   "ext/js/language/ja/japanese-transforms.js",
   "ext/css/structured-content.css",
+  "ext/css/display-pronunciation.css",
 ];
 
 const stripPrefix = (p: string) =>

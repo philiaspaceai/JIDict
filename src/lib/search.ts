@@ -1,6 +1,13 @@
 import type { FrequencySource } from "./constants";
 
 /** Minimal dictionary entry (glossary mentah Yomitan, dirender verbatim). */
+export interface DictPronunciation {
+  reading: string;
+  position: number;
+  nasal: number[];
+  devoice: number[];
+}
+
 export interface DictEntry {
   id: string;
   expression: string;
@@ -8,6 +15,8 @@ export interface DictEntry {
   glossary: unknown;
   score: number;
   pitch?: string[];
+  /** Pronunciation pitch-accent verbatim (untuk grafik Yomitan). */
+  pronunciations?: DictPronunciation[];
   freqJpdb?: number;
   freqYoutube?: number;
   jlpt?: string;

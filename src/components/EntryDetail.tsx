@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { GlossaryBlock } from "@/components/EntryCard";
+import { GlossaryBlock, PronunciationBlock } from "@/components/EntryCard";
 import type { DictEntry } from "@/lib/search";
 
 /** Lembar detail entri: headword + glossary penuh ala Yomitan. */
@@ -70,7 +70,7 @@ export function EntryDetail({
         {(entry.pitch?.length || entry.jlpt || entry.freqJpdb !== undefined || entry.freqYoutube !== undefined) && (
           <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
             {entry.jlpt && <span className="rounded-full bg-[var(--muted)] px-2.5 py-1">{entry.jlpt}</span>}
-            {entry.pitch?.map((p, i) => (
+            {!entry.pronunciations && entry.pitch?.map((p, i) => (
               <span key={i} className="rounded-full bg-[var(--muted)] px-2.5 py-1 font-jp">{p}</span>
             ))}
             {entry.freqJpdb !== undefined && (
@@ -80,6 +80,18 @@ export function EntryDetail({
               <span className="rounded-full bg-[var(--muted)] px-2.5 py-1">YT {entry.freqYoutube}</span>
             )}
           </div>
+        )}
+        {entry.pronunciations && entry.pronunciations.length > 0 && (
+          <ol className="pronunciation-list mt-3 space-y-2 border-t pt-3">
+            {entry.pronunciations.map((p, i) => (
+              <li key={`${p.reading} ${p.position} ${i}`}>
+                {new Set(entry.pronunciations!.map((x) => x.reading)).size > 1 && (
+                  <div className="mb-1 font-jp text-xs text-[var(--muted-foreground)]">{p.reading}</div>
+                )}
+                <PronunciationBlock reading={p.reading} pitch={p} />
+              </li>
+            ))}
+          </ol>
         )}
         <div className="mt-3 border-t pt-3">
           <GlossaryBlock entry={entry} onNavigate={onNavigate} />

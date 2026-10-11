@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../vendor/yomitan/css/structured-content.css";
+@import "../vendor/yomitan/css/display-pronunciation.css";
 @import "./yomitan-theme.css";
 
 @theme {

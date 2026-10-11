@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { renderGlossary, glossaryPreview } from "@/lib/dict/render";
+import { renderGlossary, glossaryPreview, renderPronunciation } from "@/lib/dict/render";
 import { getDictDB } from "@/lib/dict/client";
-import type { DictEntry } from "@/lib/search";
+import type { DictEntry, DictPronunciation } from "@/lib/search";
 
 /** Satu item definisi penuh — glossary dirender via StructuredContentGenerator Yomitan. */
 export function GlossaryBlock({
@@ -45,6 +45,24 @@ export function GlossaryBlock({
   }, [entry]);
 
   return <div ref={ref} className="jidict-entry" />;
+}
+
+/** Satu pola pitch-accent — dirender via PronunciationGenerator Yomitan. */
+export function PronunciationBlock({ reading, pitch }: { reading: string; pitch: DictPronunciation }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.replaceChildren();
+    const { node } = renderPronunciation(reading, pitch);
+    el.appendChild(node);
+    return () => {
+      el.replaceChildren();
+    };
+  }, [reading, pitch]);
+
+  return <div ref={ref} className="jidict-pronunciation font-jp" />;
 }
 
 export function EntryCard({

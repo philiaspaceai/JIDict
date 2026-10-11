@@ -19,7 +19,8 @@ export interface TermMetaRow {
   value?: number;
   display?: string;
   reading?: string;
-  positions?: number[];
+  /** Pitch verbatim (position + nasal + devoice) per reading. */
+  pitches?: Array<{ position: number; nasal: number[]; devoice: number[] }>;
   jlpt?: string;
 }
 

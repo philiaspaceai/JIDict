@@ -15,10 +15,12 @@ Yomitan checkout in `references/third_party/yomitan` (git-ignored):
   `language/ja/japanese-wanakana.js`, `language/ja/japanese-transforms.js`
 - `language/zh/chinese.js` (dibutuhkan text-utilities)
 - `display/structured-content-generator.js` (renderer glossary — dipakai apa adanya)
+- `display/pronunciation-generator.js` (grafik + teks pitch-accent — dipakai apa adanya)
 - `display/display-content-manager.js` (hanya untuk instanceof di generator;
   JIDict memakai adapter sendiri `src/lib/dict/render.ts`)
 - `templates/anki-template-renderer-content-manager.js` (hanya untuk instanceof)
 - `css/structured-content.css` (diimpor di `src/app/globals.css`)
+- `css/display-pronunciation.css` (diimpor di `src/app/globals.css`)
 
 Prinsip: JIDict menyesuaikan ke Yomitan — nol baris file-file ini yang diubah.
 

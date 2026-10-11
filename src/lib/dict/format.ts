@@ -10,7 +10,7 @@ export interface TermRecord {
 
 export type TermMeta =
   | { expression: string; mode: "freq"; source: string; value: number; display?: string; reading?: string }
-  | { expression: string; mode: "pitch"; source: string; reading: string; positions: number[] }
+  | { expression: string; mode: "pitch"; source: string; reading: string; pitches: Array<{ position: number; nasal: number[]; devoice: number[] }> }
   | { expression: string; mode: "jlpt"; source: string; jlpt: string; reading?: string };
 
 /** Parse one Yomitan term_bank v3 row. Null when malformed. */
@@ -43,10 +43,15 @@ export function parseTermMeta(row: unknown, source: string): TermMeta | null {
   if (mode === "pitch") {
     const reading = typeof d.reading === "string" ? d.reading : "";
     const pitches = Array.isArray(d.pitches) ? d.pitches : [];
-    const positions = pitches
-      .map((p) => (p && typeof p === "object" ? (p as { position?: unknown }).position : undefined))
-      .filter((p): p is number => typeof p === "number");
-    return { expression, mode: "pitch", source, reading, positions };
+    // Simpan verbatim (position + nasal + devoice) — JANGAN diringkas.
+    const clean = pitches
+      .filter((p): p is Record<string, unknown> => !!p && typeof p === "object")
+      .map((p) => ({
+        position: typeof p.position === "number" ? p.position : 0,
+        nasal: Array.isArray(p.nasal) ? p.nasal.filter((n): n is number => typeof n === "number") : [],
+        devoice: Array.isArray(p.devoice) ? p.devoice.filter((n): n is number => typeof n === "number") : [],
+      }));
+    return { expression, mode: "pitch", source, reading, pitches: clean };
   }
 
   if (mode === "freq") {

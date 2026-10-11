@@ -22,6 +22,8 @@
   --accent-color: #1a73e8;
   --accent-color-dark: #1060c0;
   --link-color: var(--accent-color);
+  --pronunciation-annotation-color: #000000;
+  --danger-color: #c83c28;
 }
 
 .dark {
@@ -38,6 +40,8 @@
   --accent-color: #4a91ed;
   --accent-color-dark: #1060c0;
   --link-color: var(--accent-color);
+  --pronunciation-annotation-color: #ffffff;
+  --danger-color: #dd6755;
 }
 
 /* Wilayah glossary mengikuti pewarnaan teks Yomitan */

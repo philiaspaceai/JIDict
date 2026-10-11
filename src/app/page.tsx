@@ -47,7 +47,7 @@ function SearchInner() {
           dict.terms.count(),
           dict.dictInfo.get("format:glossary"),
         ]);
-        setReady(count > 0 && marker?.value === "raw-v1");
+        setReady(count > 0 && marker?.value === "raw-v2");
       } catch {
         setReady(false);
       }

@@ -95,7 +95,7 @@ export async function importDictZip(
         if (m.mode === "freq") {
           batch.push({ expression: m.expression, source: opts.source, mode: "freq", value: m.value, display: m.display, reading: m.reading });
         } else if (m.mode === "pitch") {
-          batch.push({ expression: m.expression, source: opts.source, mode: "pitch", reading: m.reading, positions: m.positions });
+          batch.push({ expression: m.expression, source: opts.source, mode: "pitch", reading: m.reading, pitches: m.pitches });
         } else {
           batch.push({ expression: m.expression, source: opts.source, mode: "jlpt", jlpt: m.jlpt, reading: m.reading });
         }
@@ -112,10 +112,10 @@ export async function importDictZip(
 
   await db.dictInfo.put({ key: `title:${opts.source}`, value: title });
   await db.dictInfo.put({ key: `revision:${opts.source}`, value: revision });
-  // Penanda format glossary mentah (raw-v1). DB lama berformat flatten
-  // dianggap belum siap sehingga user onboarding ulang.
+  // Penanda format glossary mentah (raw-v2: pitch full position+nasal+devoice).
+  // DB lama dianggap belum siap sehingga user onboarding ulang.
   if (opts.kind === "main") {
-    await db.dictInfo.put({ key: "format:glossary", value: "raw-v1" });
+    await db.dictInfo.put({ key: "format:glossary", value: "raw-v2" });
   }
 
   // styles.css kamus (untuk render sesuai gaya kamus) — hanya di kamus utama.

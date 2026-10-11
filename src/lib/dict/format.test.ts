@@ -40,7 +40,9 @@ describe("parseTermMeta", () => {
       "pitch",
     ) as TermMeta;
     expect(m).toMatchObject({ mode: "pitch", reading: "ああ" });
-    expect((m as { positions: number[] }).positions).toEqual([0]);
+    expect((m as { pitches: Array<{ position: number }> }).pitches).toStrictEqual([
+      { position: 0, nasal: [], devoice: [] },
+    ]);
   });
   it("rejects unknown mode", () => {
     expect(parseTermMeta(["a", "xxx", {}], "jpdb")).toBeNull();
