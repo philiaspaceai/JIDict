@@ -9,8 +9,13 @@
   --color-ink: #262626;
   --color-paper: #ffffff;
 
-  --font-sans: "Inter", "Noto Sans JP", system-ui, sans-serif;
-  --font-jp: "Noto Sans JP", "Inter", system-ui, sans-serif;
+  --font-sans: var(--font-outfit), "Noto Sans JP", system-ui, sans-serif;
+  --font-display: var(--font-outfit), "Noto Sans JP", system-ui, sans-serif;
+  --font-jp: "Noto Sans JP", var(--font-outfit), system-ui, sans-serif;
+
+  --radius-card: 20px;
+  --radius-sheet: 24px;
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
 }
 
 :root {
@@ -20,23 +25,29 @@
   --card-foreground: #262626;
   --muted: #f5f5f5;
   --muted-foreground: #737373;
-  --border: #e5e5e5;
+  --border: #e7e7e7;
   --primary: #ed090e;
   --primary-foreground: #ffffff;
   --ring: #ed090e;
+  --glass: rgb(255 255 255 / 0.82);
 }
 
 .dark {
-  --background: #131313;
+  --background: #0c0c0e;
   --foreground: #f5f5f5;
-  --card: #1e1e1e;
+  --card: #161618;
   --card-foreground: #f5f5f5;
-  --muted: #262626;
+  --muted: #1e1e22;
   --muted-foreground: #a3a3a3;
-  --border: #333333;
+  --border: #2a2a30;
   --primary: #ff2b30;
   --primary-foreground: #ffffff;
   --ring: #ff2b30;
+  --glass: rgb(12 12 14 / 0.78);
+}
+
+html {
+  scrollbar-color: var(--border) transparent;
 }
 
 body {
@@ -44,6 +55,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Glosarium Yomitan (detail di yomitan-theme.css) */
@@ -65,6 +77,12 @@ body {
 
 .splash-enter {
   animation: fade-scale-in 300ms ease-out;
+}
+
+/* Shimmer untuk skeleton (transform-only) */
+@keyframes shimmer-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

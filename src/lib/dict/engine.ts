@@ -1,5 +1,6 @@
 import type { FrequencySource } from "@/lib/constants";
 import { normalizeQuery, sortByFrequency, type DictEntry } from "@/lib/search";
+import { isRomajiQuery } from "@/lib/search";
 import { toHiragana } from "@/lib/dict/kana";
 import { deinflect } from "@/lib/dict/deinflect";
 import type { DictDB } from "@/lib/dict/store";
@@ -29,6 +30,44 @@ export function buildVariants(query: string): string[] {
   const hira = toHiragana(query);
   const all = [query, hira, ...deinflect(query), ...deinflect(hira)];
   return uniqueCapped(all);
+}
+
+/** Prefix saran saat mengetik (romaji parsial ikut dikonversi). */
+export async function suggestTerms(
+  db: DictDB,
+  rawQuery: string,
+  limit = 8,
+): Promise<Array<{ expression: string; reading: string }>> {
+  const q = normalizeQuery(rawQuery);
+  if (!q) return [];
+  const prefixes = uniqueCapped(suggestPrefixes(q), 4);
+  const seen = new Map<string, { expression: string; reading: string }>();
+  for (const v of prefixes) {
+    if (!v) continue;
+    const [byExp, byRead] = await Promise.all([
+      db.terms.where("expression").startsWith(v).limit(limit).toArray(),
+      db.terms.where("reading").startsWith(v).limit(limit).toArray(),
+    ]);
+    for (const t of [...byExp, ...byRead]) {
+      if (!seen.has(t.expression)) {
+        seen.set(t.expression, { expression: t.expression, reading: t.reading });
+      }
+      if (seen.size >= limit) break;
+    }
+    if (seen.size >= limit) break;
+  }
+  return [...seen.values()].slice(0, limit);
+}
+
+function suggestPrefixes(q: string): string[] {
+  const out = [q, toHiragana(q)];
+  // Romaji parsial ("tab") → potong ekor latin ("た") agar tetap tersaran.
+  if (isRomajiQuery(q)) {
+    const hira = toHiragana(q);
+    const stripped = hira.replace(/[a-z]+$/i, "");
+    if (stripped && stripped !== hira) out.push(stripped);
+  }
+  return out;
 }
 
 function pitchLabel(reading: string, pitches: Array<{ position: number }>): string[] {

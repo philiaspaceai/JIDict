@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { Segmented } from "@/components/Segmented";
 import { getDictDB } from "@/lib/dict/client";
 import { clearDictData } from "@/lib/dict/importer";
 import { fetchRemoteDictIndex, isNewerVersion } from "@/lib/update-check";
@@ -45,49 +46,39 @@ export default function SettingsPage() {
 
   return (
     <>
-      <h1 className="text-lg font-bold">Setelan</h1>
-      <div className="mt-4 space-y-3">
-        <section className="rounded-xl border bg-[var(--card)] p-4">
+      <h1 className="font-display text-xl font-bold tracking-tight">Setelan</h1>
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <section className="rounded-card border bg-[var(--card)] p-4">
           <h2 className="text-sm font-semibold">Tema</h2>
-          <div className="mt-2 flex gap-2">
-            {(["system", "light", "dark"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setTheme(t)}
-                aria-pressed={theme === t}
-                className={`rounded-full px-4 py-1.5 text-sm capitalize ${
-                  theme === t ? "bg-[var(--primary)] text-white" : "bg-[var(--muted)]"
-                }`}
-              >
-                {t === "system" ? "Auto" : t === "light" ? "Terang" : "Gelap"}
-              </button>
-            ))}
+          <div className="mt-2">
+            <Segmented
+              ariaLabel="Tema"
+              options={["system", "light", "dark"] as const}
+              value={(theme as "system" | "light" | "dark" | undefined) ?? "system"}
+              onChange={setTheme}
+              labels={{ system: "Auto", light: "Terang", dark: "Gelap" }}
+            />
           </div>
         </section>
 
-        <section className="rounded-xl border bg-[var(--card)] p-4">
+        <section className="rounded-card border bg-[var(--card)] p-4">
           <h2 className="text-sm font-semibold">Frekuensi</h2>
           <p className="mt-1 text-xs text-[var(--muted-foreground)]">Menentukan urutan hasil.</p>
-          <div className="mt-2 flex gap-2">
-            {(["jpdb", "youtube"] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => {
-                  setFrequencySource(s);
-                  setFreq(s);
-                }}
-                aria-pressed={freq === s}
-                className={`rounded-full px-4 py-1.5 text-sm ${
-                  freq === s ? "bg-[var(--primary)] text-white" : "bg-[var(--muted)]"
-                }`}
-              >
-                {s === "jpdb" ? "JPDB" : "Youtube"}
-              </button>
-            ))}
+          <div className="mt-2">
+            <Segmented
+              ariaLabel="Sumber frekuensi"
+              options={["jpdb", "youtube"] as const}
+              value={freq}
+              onChange={(s) => {
+                setFrequencySource(s);
+                setFreq(s);
+              }}
+              labels={{ jpdb: "JPDB", youtube: "Youtube" }}
+            />
           </div>
         </section>
 
-        <section className="rounded-xl border bg-[var(--card)] p-4">
+        <section className="rounded-card border bg-[var(--card)] p-4 lg:col-span-2">
           <h2 className="text-sm font-semibold">Data</h2>
           <p className="mt-1 text-xs text-[var(--muted-foreground)]">
             Kamus: {version ?? "belum terpasang"}
@@ -97,17 +88,17 @@ export default function SettingsPage() {
             <button
               onClick={checkUpdate}
               disabled={busy}
-              className="rounded-full bg-[var(--muted)] px-4 py-1.5 text-sm disabled:opacity-60"
+              className="rounded-full bg-[var(--muted)] px-4 py-1.5 text-sm transition-transform active:scale-95 disabled:opacity-60"
             >
-              Cek update
+              Periksa
             </button>
-            <button onClick={wipe} className="rounded-full bg-[var(--muted)] px-4 py-1.5 text-sm">
+            <button onClick={wipe} className="rounded-full bg-[var(--muted)] px-4 py-1.5 text-sm transition-transform active:scale-95">
               Hapus data
             </button>
           </div>
         </section>
 
-        <section className="rounded-xl border bg-[var(--card)] p-4">
+        <section className="rounded-card border bg-[var(--card)] p-4 lg:col-span-2">
           <h2 className="text-sm font-semibold">Tentang</h2>
           <div className="mt-2 flex items-center gap-3">
             <Image src="/logo/community-logo.png" alt="Philia Space" width={48} height={48} />

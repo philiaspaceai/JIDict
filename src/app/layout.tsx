@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 import { AppShell } from "@/components/AppShell";
+
+const outfit = localFont({
+  src: "./fonts/outfit-latin.woff2",
+  variable: "--font-outfit",
+  weight: "100 900",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "JIDict — Kamus Jepang-Indonesia",
@@ -25,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning className={outfit.variable}>
       <body>
         <Providers>
           <AppShell>{children}</AppShell>
