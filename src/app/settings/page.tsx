@@ -102,8 +102,65 @@ export default function SettingsPage() {
           <h2 className="text-sm font-semibold">Tentang</h2>
           <div className="mt-2 flex items-center gap-3">
             <Image src="/logo/community-logo.png" alt="Philia Space" width={48} height={48} />
-            <p className="text-xs text-[var(--muted-foreground)]">JIDict · GPL-3.0 · Engine Yomitan</p>
+            <p className="text-sm font-semibold">Philia Space Community</p>
           </div>
+          <p className="mt-2 text-xs leading-relaxed text-[var(--muted-foreground)]">
+            JIDict adalah aplikasi kamus Jepang-Indonesia berformat Yomitan Dictionary pertama di Indonesia,
+            dengan jumlah entri lebih dari 300.000. Kamus ini dikembangkan oleh Philia Space Community selaku
+            komunitas belajar bahasa Jepang asal Indonesia yang bersifat non-profit dan memiliki tiga peran utama,
+            yaitu sebagai tempat belajar bersama melalui diskusi, latihan, dan berbagi pengalaman belajar bahasa
+            Jepang, sebagai tempat mengembangkan berbagai tools dan resource belajar seperti kamus JIDict, deck Anki,
+            bot latihan JLPT, hingga skill AI agent yang semuanya bersifat open-source, serta sebagai tempat
+            menampung dan mengkurasi resource dari berbagai komunitas luar negeri seperti TheMoeWay agar mudah
+            ditemukan dan dimanfaatkan oleh para pejuang bahasa Jepang Indonesia.
+          </p>
+          <dl className="mt-3 space-y-1.5 text-xs">
+            <div className="flex gap-2">
+              <dt className="shrink-0 text-[var(--muted-foreground)]">Data kamus</dt>
+              <dd>
+                © Utawnyan &amp; Demonkzz ·{" "}
+                <a
+                  href="https://creativecommons.org/licenses/by-nc/4.0/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[var(--primary)]"
+                >
+                  CC BY-NC 4.0
+                </a>
+              </dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="shrink-0 text-[var(--muted-foreground)]">Aplikasi</dt>
+              <dd>
+                <a
+                  href="https://www.gnu.org/licenses/gpl-3.0.html"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[var(--primary)]"
+                >
+                  GPL-3.0
+                </a>{" "}
+                · Engine{" "}
+                <a
+                  href="https://github.com/yomidevs/yomitan"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[var(--primary)]"
+                >
+                  Yomitan
+                </a>{" "}
+                ·{" "}
+                <a
+                  href="https://github.com/philiaspaceai/JIDict"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[var(--primary)]"
+                >
+                  Kode sumber
+                </a>
+              </dd>
+            </div>
+          </dl>
         </section>
       </div>
     </>

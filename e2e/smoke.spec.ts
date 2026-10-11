@@ -36,6 +36,8 @@ test("smoke: settings shows frequency options", async ({ page }) => {
   await page.goto("/settings");
   await expect(page.getByText("JPDB")).toBeVisible({ timeout: 60_000 });
   await expect(page.getByText("Youtube")).toBeVisible();
+  await expect(page.getByText("Philia Space Community", { exact: true })).toBeVisible();
+  await expect(page.getByText("CC BY-NC 4.0")).toBeVisible();
 });
 
 test("smoke: offline page exists", async ({ page }) => {
