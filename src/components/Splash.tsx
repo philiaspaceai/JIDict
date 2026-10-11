@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useTheme } from "next-themes";
+import { BrandLogo } from "@/components/BrandLogo";
 import { BUNDLED_DICTS, DICT_DOWNLOAD_URL } from "@/lib/constants";
 import { getDictDB } from "@/lib/dict/client";
 import { clearDictData, importDictZip } from "@/lib/dict/importer";
@@ -56,7 +56,6 @@ const STAGE_LABEL: Record<string, string> = {
 };
 
 export function Splash({ onDone }: { onDone: () => void }) {
-  const { resolvedTheme } = useTheme();
   const [flow, setFlow] = useState<SplashFlowState>("checking-app");
   const [progress, setProgress] = useState(0);
   const [bytes, setBytes] = useState({ done: 0, total: 0 });
@@ -183,13 +182,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
 
   return (
     <div data-testid="splash" className="splash-enter flex min-h-dvh flex-col items-center justify-center gap-6 bg-[var(--background)]">
-      <Image
-        src={resolvedTheme === "dark" ? "/logo/app-logo-dark.png" : "/logo/app-logo.png"}
-        alt="JIDict"
-        width={180}
-        height={52}
-        priority
-      />
+      <BrandLogo width={180} height={52} />
       <div className="w-44">
         <div className="h-0.5 overflow-hidden rounded bg-[var(--border)]">
           <div className="h-full rounded bg-[var(--primary)] transition-[width]" style={{ width: `${pct}%` }} />

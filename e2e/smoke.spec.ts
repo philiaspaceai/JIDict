@@ -1,6 +1,20 @@
 import { test, expect } from "@playwright/test";
 import { mockDictRoutes } from "./helpers/mock-dict";
 
+test.describe("logo sadar-tema", () => {
+  test.use({ colorScheme: "dark" });
+
+  test("dark mode memakai aset logo dark", async ({ page }) => {
+    await mockDictRoutes(page);
+    await page.goto("/");
+    await expect(page.getByRole("search")).toBeVisible({ timeout: 60_000 });
+    const bg = await page.getByRole("img", { name: "JIDict" }).evaluate((el) =>
+      getComputedStyle(el).backgroundImage,
+    );
+    expect(bg).toContain("app-logo-dark.png");
+  });
+});
+
 test.beforeEach(async ({ page }) => {
   await mockDictRoutes(page);
 });

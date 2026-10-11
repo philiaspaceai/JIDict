@@ -58,6 +58,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Logo brand: aset dipilih via CSS agar benar sejak first paint.
+   (resolvedTheme next-themes masih undefined di render pertama → pola
+   JS-conditional selalu menampilkan logo light sekilas di dark mode.) */
+.brand-logo {
+  background: url(/logo/app-logo.png) center / contain no-repeat;
+}
+.dark .brand-logo {
+  background-image: url(/logo/app-logo-dark.png);
+}
+
 /* Glosarium Yomitan (detail di yomitan-theme.css) */
 .jidict-glossary {
   font-size: 0.95rem;
