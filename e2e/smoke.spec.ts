@@ -24,3 +24,18 @@ test("smoke: offline page exists", async ({ page }) => {
   await page.goto("/offline");
   await expect(page.getByText("Offline")).toBeVisible();
 });
+
+test("splash hanya saat buka awal, tidak saat pindah tab", async ({ page }) => {
+  await page.goto("/");
+  const search = page.getByRole("search");
+  const onboarding = page.getByRole("button", { name: "Unduh data" });
+  await expect(search.or(onboarding)).toBeVisible();
+  // Splash awal boleh muncul, tapi harus hilang sebelum navigasi.
+  await expect(page.getByTestId("splash")).toHaveCount(0);
+  await page.getByRole("link", { name: "Setelan" }).click();
+  await expect(page).toHaveURL("/settings");
+  await expect(page.getByTestId("splash")).toHaveCount(0);
+  await page.getByRole("link", { name: "Cari" }).click();
+  await expect(page).toHaveURL("/");
+  await expect(page.getByTestId("splash")).toHaveCount(0);
+});

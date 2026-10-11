@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AppShell } from "@/components/AppShell";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryDetail } from "@/components/EntryDetail";
 import { MascotEmpty } from "@/components/MascotEmpty";
@@ -23,7 +22,7 @@ export default function BookmarkPage() {
   }
 
   return (
-    <AppShell>
+    <>
       <h1 className="text-lg font-bold">Markah</h1>
       {items.length === 0 ? (
         <MascotEmpty
@@ -53,6 +52,6 @@ export default function BookmarkPage() {
           onClose={() => setSelected(null)}
         />
       )}
-    </AppShell>
+    </>
   );
 }

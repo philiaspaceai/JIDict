@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { AppShell } from "@/components/AppShell";
 import { getDictDB } from "@/lib/dict/client";
 import { clearDictData } from "@/lib/dict/importer";
 import { fetchRemoteDictIndex, isNewerVersion } from "@/lib/update-check";
@@ -45,7 +44,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <AppShell>
+    <>
       <h1 className="text-lg font-bold">Setelan</h1>
       <div className="mt-4 space-y-3">
         <section className="rounded-xl border bg-[var(--card)] p-4">
@@ -116,6 +115,6 @@ export default function SettingsPage() {
           </div>
         </section>
       </div>
-    </AppShell>
+    </>
   );
 }

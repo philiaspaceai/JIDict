@@ -20,7 +20,7 @@ export function Splash({
   }, [onDone]);
 
   return (
-    <div className="splash-enter flex min-h-dvh flex-col items-center justify-center gap-6 bg-[var(--background)]">
+    <div data-testid="splash" className="splash-enter flex min-h-dvh flex-col items-center justify-center gap-6 bg-[var(--background)]">
       <Image
         src={resolvedTheme === "dark" ? "/logo/app-logo-dark.png" : "/logo/app-logo.png"}
         alt="JIDict"

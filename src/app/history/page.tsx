@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AppShell } from "@/components/AppShell";
 import { MascotEmpty } from "@/components/MascotEmpty";
 import { clearHistory, listHistory } from "@/lib/user";
 
@@ -14,7 +13,7 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <AppShell>
+    <>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold">Riwayat</h1>
         {items.length > 0 && (
@@ -44,6 +43,6 @@ export default function HistoryPage() {
           ))}
         </div>
       )}
-    </AppShell>
+    </>
   );
 }

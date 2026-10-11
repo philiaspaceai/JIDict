@@ -2,7 +2,6 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AppShell } from "@/components/AppShell";
 import { SearchBar } from "@/components/SearchBar";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryDetail } from "@/components/EntryDetail";
@@ -109,10 +108,8 @@ function SearchInner() {
 
 export default function SearchPage() {
   return (
-    <AppShell>
-      <Suspense>
-        <SearchInner />
-      </Suspense>
-    </AppShell>
+    <Suspense>
+      <SearchInner />
+    </Suspense>
   );
 }
